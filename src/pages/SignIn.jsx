@@ -1,4 +1,6 @@
 import { useState } from "react";
+import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
 
 function SignIn() {
   const [userData, setUserData] = useState({ email: "", password: "" });
@@ -7,9 +9,22 @@ function SignIn() {
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Data Submitted: ", userData);
+
+    try {
+      await axios.post("http://localhost:5000/users/login", userData, {
+        withCredentials: true,
+      });
+
+      // console.log("Response from signin: ", res.data);
+      navigate("/dashboard");
+    } catch (err) {
+      console.log(err.message);
+    }
+
+    console.log("Login Data Submitted: ", userData);
   };
 
   return (
@@ -58,6 +73,14 @@ function SignIn() {
                 <button className="py-2 px-8 bg-blue-500 hover:bg-blue-800 focus:ring-offset-blue-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg cursor-pointer select-none">
                   Login
                 </button>
+              </div>
+              <div>
+                <p className="text-sm text-center text-[#8B8E98] pt-5">
+                  Create an account?{" "}
+                  <Link to="/" className="text-blue-500">
+                    Sign Up
+                  </Link>
+                </p>
               </div>
             </form>
           </div>
